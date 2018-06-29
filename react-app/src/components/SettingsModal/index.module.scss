@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+.topBottomElement {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.top {
+  @extend .topBottomElement;
+  border-bottom: 1px solid gray;
+
+  .hideContainer { align-self: flex-end; }
+}
+
+.middle {
+  flex-grow: 8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bottom {
+  @extend .topBottomElement;
+  border-top: 1px solid gray;
+}
