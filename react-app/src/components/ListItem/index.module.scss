@@ -1,0 +1,28 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.entry {
+  width: 1%;
+  flex-grow: 1;
+}
+
+.collapsed {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.expanded {
+  flex-grow: 1;
+  max-width: 100%;
+  white-space: wrap;
+  word-wrap: break-word;
+}
+
+.buttonsContainer {
+  display: flex;
+  flex-direction: row-reverse;
+}

@@ -1,12 +1,15 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faTrashAlt, faCheck } from '@fortawesome/fontawesome-free-solid';
+import { faChevronLeft, faTrashAlt, faCheck, faAngleUp, faAngleDown, faBars } from '@fortawesome/fontawesome-free-solid';
 
-export default class ActionIcon extends PureComponent {
+export default class ActionIcon extends React.PureComponent {
   static BACK = 'back';
   static REMOVE = 'remove';
   static APPLY = 'apply';
+  static EXPAND = 'expand';
+  static COLLAPSE = 'collapse';
+  static SETTINGS = 'settings';
 
   static propTypes = {
     /**
@@ -15,7 +18,10 @@ export default class ActionIcon extends PureComponent {
     icon: PropTypes.oneOf([
       ActionIcon.BACK,
       ActionIcon.REMOVE,
-      ActionIcon.APPLY
+      ActionIcon.APPLY,
+      ActionIcon.EXPAND,
+      ActionIcon.COLLAPSE,
+      ActionIcon.SETTINGS,
     ]).isRequired,
 
     /**
@@ -24,7 +30,7 @@ export default class ActionIcon extends PureComponent {
     onClick: PropTypes.func.isRequired,
   };
 
-  _handleClick = event => this.props.onClick(event);
+  _handleClick = () => this.props.onClick(this.props.icon);
 
   _getIcon = () => {
     switch (this.props.icon) {
@@ -34,6 +40,12 @@ export default class ActionIcon extends PureComponent {
         return faTrashAlt;
       case ActionIcon.APPLY:
         return faCheck;
+      case ActionIcon.EXPAND:
+        return faAngleDown;
+      case ActionIcon.COLLAPSE:
+        return faAngleUp;
+      case ActionIcon.SETTINGS:
+        return faBars;
       default:
         return null;
     }

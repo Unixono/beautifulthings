@@ -12,6 +12,9 @@ const availableIcons = {
   back: ActionIcon.BACK,
   remove: ActionIcon.REMOVE,
   apply: ActionIcon.APPLY,
+  expand: ActionIcon.EXPAND,
+  collapse: ActionIcon.COLLAPSE,
+  settings: ActionIcon.SETTINGS,
 }
 
 stories.add('ActionIcon', () => (
