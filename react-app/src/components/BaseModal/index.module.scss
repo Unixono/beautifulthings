@@ -17,6 +17,14 @@
   height: 100vh;
   display: flex;
   position: absolute;
+}
+
+.leftModal {
+  @extend .modal;
+}
+
+.floattingModal {
+  @extend .modal;
   align-items: center;
   justify-content: center;
 }
