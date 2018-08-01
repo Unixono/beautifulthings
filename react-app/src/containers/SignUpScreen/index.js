@@ -27,6 +27,14 @@ export default class SignUpScreen extends React.PureComponent {
     isTryAnotherModalVisible: false,
   };
 
+  componentWillMount() {
+    document.addEventListener("backbutton", this._handleSignIn);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("backbutton", this._handleSignIn);
+  }
+
   _validateForm() {
     const { username, password } = this.state;
 
