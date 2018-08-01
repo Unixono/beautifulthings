@@ -113,13 +113,13 @@ export default class ListScreenWrapper extends React.PureComponent {
   _getListScreen() {
     const { onAdd, onEdit } = this.props;
 
-    return ListScreen({
-      entries: this.state.entries || [],
-      onAdd: onAdd,
-      onEdit: onEdit,
-      onRemove: this._setEntryToDelete,
-      onSettings: this._openSettingsModal,
-    });
+    return <ListScreen
+      entries={this.state.entries || []}
+      onAdd={onAdd}
+      onEdit={onEdit}
+      onRemove={this._setEntryToDelete}
+      onSettings={this._openSettingsModal}
+    />;
   }
 
   render() {

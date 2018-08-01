@@ -10,22 +10,54 @@ import Welcome from 'components/Welcome';
 
 import styles from './index.module.scss';
 
-const ListScreen = props => {
-  const {
-    entries,
-    onAdd,
-    onEdit,
-    onRemove,
-    onSettings,
-  } = props;
+export default class ListScreen extends React.PureComponent {
+  static propTypes = {
+    /**
+     * The set of entries to draw in the list
+     */
+    entries: PropTypes.arrayOf(PropTypes.shape({
+      date: PropTypes.string.isRequired,
+      text: PropTypes.string.isRequired,
+    })).isRequired,
 
-  const _handleEdit = entryDate => onEdit(entryDate);
-  const _handleDelete = entryDate => onRemove(entryDate);
+    /**
+     * The function to call when add button is tapped
+     */
+    onAdd: PropTypes.func.isRequired,
 
-  function _getHeader() {
+    /**
+     * The function to call when edit button is tapped over an entry
+     */
+    onEdit: PropTypes.func.isRequired,
+
+    /**
+     * The function to call when remove button is tapped over an entry
+     */
+    onRemove: PropTypes.func.isRequired,
+
+    /**
+     * The function to call when setting icon is tapped
+     */
+    onSettings: PropTypes.func.isRequired,
+  };
+
+  _closeApp = () => navigator.app.exitApp();
+
+  componentWillMount() {
+    document.addEventListener("backbutton", this._closeApp);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("backbutton", this._closeApp);
+  }
+
+  _handleEdit = entryDate => this.props.onEdit(entryDate);
+  _handleDelete = entryDate => this.props.onRemove(entryDate);
+
+  _getHeader() {
     const settingsIcon = ActionIcon({
       icon: ActionIcon.SETTINGS,
-      onClick: onSettings,
+      onClick: this.props.onSettings,
     });
 
     const header = Header({ left: settingsIcon });
@@ -37,13 +69,13 @@ const ListScreen = props => {
     );
   }
 
-  function _getList() {
-    const list = entries.map((entry, index) => <ListItem
+  _getList() {
+    const list = this.props.entries.map((entry, index) => <ListItem
       key={index}
       date={entry.date}
       text={entry.text}
-      onEdit={_handleEdit}
-      onDelete={_handleDelete}
+      onEdit={this._handleEdit}
+      onDelete={this._handleDelete}
     />);
 
     return (
@@ -53,12 +85,12 @@ const ListScreen = props => {
     );
   }
 
-  function _getFooter() {
+  _getFooter() {
     const buttonImage = <div className={styles.buttonImage} />;
 
     const addButton = Button({
       children: buttonImage,
-      onClick: onAdd,
+      onClick: this.props.onAdd,
       small: true,
     });
 
@@ -69,46 +101,15 @@ const ListScreen = props => {
     );
   }
 
-  const header = _getHeader();
-  const main = entries.length ? _getList() : Welcome();
-  const footer = _getFooter();
+  render() {
+    const header = this._getHeader();
+    const main = this.props.entries.length ? this._getList() : Welcome();
+    const footer = this._getFooter();
 
-  return BaseScreen({
-    header,
-    main,
-    footer,
-  });
-
-};
-
-ListScreen.propTypes = {
-  /**
-   * The set of entries to draw in the list
-   */
-  entries: PropTypes.arrayOf(PropTypes.shape({
-    date: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
-  })).isRequired,
-
-  /**
-   * The function to call when add button is tapped
-   */
-  onAdd: PropTypes.func.isRequired,
-
-  /**
-   * The function to call when edit button is tapped over an entry
-   */
-  onEdit: PropTypes.func.isRequired,
-
-  /**
-   * The function to call when remove button is tapped over an entry
-   */
-  onRemove: PropTypes.func.isRequired,
-
-  /**
-   * The function to call when setting icon is tapped
-   */
-  onSettings: PropTypes.func.isRequired,
-};
-
-export default ListScreen;
+    return BaseScreen({
+      header,
+      main,
+      footer,
+    });
+  }
+}
