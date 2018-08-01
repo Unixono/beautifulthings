@@ -26,6 +26,16 @@ export default class StartScreen extends React.PureComponent {
     isModalVisible: false,
   };
 
+  _closeApp = () => navigator.app.exitApp();
+
+  componentWillMount() {
+    document.addEventListener("backbutton", this._closeApp);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("backbutton", this._closeApp);
+  }
+
   _validateForm() {
     const { username, password } = this.state;
 
