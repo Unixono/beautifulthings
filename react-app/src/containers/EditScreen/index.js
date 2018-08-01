@@ -33,8 +33,16 @@ export default class EditScreen extends React.PureComponent {
     onSave: PropTypes.func.isRequired,
   };
 
+  componentWillMount() {
+    document.addEventListener("backbutton", this._handleBack);
+  }
+
   componentDidMount() {
     this._textArea.focus();
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("backbutton", this._handleBack);
   }
 
   _setDatePickerRef = element => this._datePicker = element;
