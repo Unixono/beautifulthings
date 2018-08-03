@@ -5,6 +5,7 @@ import api from 'api';
 
 import { getCurrentDateString } from 'utils/date';
 import { createEntry } from 'utils/entry';
+import { showErrorModal } from 'utils/errorModal';
 import { showLoadingModal, hideLoadingModal } from 'utils/spinner';
 
 import Button from 'components/Button';
@@ -34,8 +35,11 @@ export default class EditScreenWrapper extends React.PureComponent {
       const entries = await api.getEntries(dateToEdit, dateToEdit);
       const entryText = entries[0].text;
       this.setState({ text: entryText });
-    } catch (error) { /* TODO: TBD */ }
-    hideLoadingModal();
+    } catch (error) {
+      showErrorModal('Cannot get the entry text...');
+    } finally {
+      hideLoadingModal();
+    }
   }
 
   _handleBack = (entryDate, entryText) => {
@@ -45,17 +49,20 @@ export default class EditScreenWrapper extends React.PureComponent {
     else this.props.onBack();
   }
 
-  _handleSave = (date, text) => {
+  _handleSave = async (date, text) => {
     const entry = createEntry(date, text);
 
     showLoadingModal('Saving...');
-    api.addEntry(entry)
-      .then(result => {
-        hideLoadingModal();
-        if (result) this.props.onSave();
-        else { /* TODO: TBD */ }
-      })
-      .catch(error => { /* TODO: TBD */ });
+    try {
+      const success = await api.addEntry(entry);
+
+      if (success) this.props.onSave();
+      else showErrorModal('Cannot be saved...');
+    } catch (error) {
+      showErrorModal('Cannot be saved...');
+    } finally {
+      hideLoadingModal();
+    }
   }
 
   _showUnsavedChangesModal = () => this.setState({ unsavedChangesModalVisible: true });
