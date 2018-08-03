@@ -1,0 +1,31 @@
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
+
+$radioButtonExternalWidth: 14px;
+$radioButtonInternalWidth: 8px;
+
+.container {
+  display: flex;
+  align-items: center;
+  color: $darkGray;
+  font-size: 20px;
+  font-family: BariolRegular;
+
+  .radioBorder {
+    width: $radioButtonExternalWidth;
+    height: $radioButtonExternalWidth;
+    border-radius: 50%;
+    border: 2px solid $violet;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+
+    .selected {
+      width: $radioButtonInternalWidth;
+      height: $radioButtonInternalWidth;
+      border-radius: 50%;
+      background-color: $violet;
+    }
+  }
+}

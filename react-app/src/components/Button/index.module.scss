@@ -1,0 +1,78 @@
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
+
+.containerCommons {
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.containerSmallCommons {
+  @extend .containerCommons;
+  display: inline-block;
+  border: 2px solid $lightGray;
+}
+
+.buttonCommons {
+  border-radius: 10px;
+  font-family: BariolRegular;
+  background-color: inherit;
+  border: 3px solid rgba($color: #000, $alpha: 0);
+  outline: none;
+}
+
+.buttonNormalCommons {
+  @extend .buttonCommons;
+  width: 100%;
+  color: white;
+  font-size: 20px;
+}
+
+.buttonSmallCommons {
+  @extend .buttonCommons;
+  color: $violet;
+  font-size: 15px;
+}
+
+.normalEnabled {
+  @extend .containerCommons;
+  background-color: $violet;
+
+  .button {
+    @extend .buttonNormalCommons;
+  }
+
+  .button:active {
+    border-color: white;
+  }
+}
+
+.normalDisabled {
+  @extend .containerCommons;
+  background-color: $lightGray;
+
+  .button {
+    @extend .buttonNormalCommons;
+  }
+}
+
+.smallEnabled {
+  @extend .containerSmallCommons;
+  background-color: white;
+
+  .button {
+    @extend .buttonSmallCommons;
+  }
+
+  .button:active {
+    border-color: $violet;
+  }
+}
+
+.smallDisabled {
+  @extend .containerSmallCommons;
+  background-color: $lightGray;
+
+  .button {
+    @extend .buttonSmallCommons;
+  }
+}

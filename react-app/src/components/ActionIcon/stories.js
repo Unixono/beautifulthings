@@ -8,16 +8,22 @@ import ActionIcon from './';
 const stories = storiesOf('ActionIcon', module);
 stories.addDecorator(withKnobs);
 
+const backgroundStyle = {'background-color': 'black'};
+
 const availableIcons = {
   back: ActionIcon.BACK,
-  remove: ActionIcon.REMOVE,
   apply: ActionIcon.APPLY,
+  expand: ActionIcon.EXPAND,
+  collpase: ActionIcon.COLLAPSE,
+  settings: ActionIcon.SETTINGS,
+  hide: ActionIcon.HIDE,
 }
 
 stories.add('ActionIcon', () => (
-  <ActionIcon
-    icon={selectV2('Icon', availableIcons, availableIcons.back)}
-    onClick={action('ActionIcon clicked')}
-  >
-  </ActionIcon>
+  <div style={backgroundStyle}>
+    <ActionIcon
+      icon={selectV2('Icon', availableIcons, availableIcons.back)}
+      onClick={action('ActionIcon clicked')}
+    />
+  </div>
 ));

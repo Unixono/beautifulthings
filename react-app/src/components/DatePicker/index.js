@@ -13,11 +13,9 @@ export default class DatePicker extends React.PureComponent {
     date: PropTypes.string.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = { datePicked: props.date };
-  }
+  state = {
+    datePicked: this.props.date,
+  };
 
   _handleChange = event => {
     const newDatePicked = event.target.value;
@@ -26,20 +24,35 @@ export default class DatePicker extends React.PureComponent {
     if (isNewDatePickedValid) this.setState({ datePicked: newDatePicked });
   }
 
-  getDate = () => this.state.datePicked;
-
-  render() {
+  _getInput() {
     const maxDate = getCurrentDateString();
 
     return (
+      <input
+        className={styles.input}
+        type="date"
+        max={maxDate}
+        value={this.state.datePicked}
+        onChange={this._handleChange}
+      />
+    );
+  }
+
+  getDate() {
+    return this.state.datePicked;
+  }
+
+  render() {
+    const input = this._getInput();
+
+    return (
       <div>
-        <label className={styles.label}>When?</label>
-        <input
-          type="date"
-          max={maxDate}
-          value={this.state.datePicked}
-          onChange={this._handleChange}
-        />
+        <label className={styles.labelContainer}>
+          When?
+        </label>
+        <div className={styles.inputContainer}>
+          {input}
+        </div>
       </div>
     );
   }

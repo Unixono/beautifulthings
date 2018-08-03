@@ -9,34 +9,31 @@ import Button from 'components/Button';
 const stories = storiesOf('ButtonsModal', module);
 stories.addDecorator(withKnobs);
 
-stories.add('ButtonsModal with unique button', () => {
-  const primaryButton =
-    <Button onClick={action('Unique button clicked')}>
-      Unique button
-    </Button>;
+const primaryButton = Button({
+  children: "Primary button",
+  onClick: action('Primary button clicked'),
+  small: true,
+});
 
-  return <ButtonsModal
+const secondaryButton = Button({
+  children: "Secondary button",
+  onClick: action('Secondary button clicked'),
+  small: true,
+});
+
+stories.add('ButtonsModal with unique button', () => (
+  <ButtonsModal
     visible={boolean('Visible?', true, '')}
     message={text('Message', 'This is the message that will be shown')}
     primaryButton={primaryButton}
   />
-});
+));
 
-stories.add('ButtonsModal with secondary button', () => {
-  const primaryButton =
-    <Button onClick={action('Primary button clicked')}>
-      Primary button
-    </Button>;
-
-  const secondaryButton =
-    <Button onClick={action('Secondary button clicked')}>
-      Secondary button
-    </Button>;
-
-  return <ButtonsModal
+stories.add('ButtonsModal with secondary button', () => (
+  <ButtonsModal
     visible={boolean('Visible?', true, '')}
     message={text('Message', 'This is the message that will be shown')}
     primaryButton={primaryButton}
     secondaryButton={secondaryButton}
   />
-});
+));

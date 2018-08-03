@@ -13,13 +13,34 @@ export default class TextArea extends React.PureComponent {
     text: PropTypes.string.isRequired,
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    currentText: this.props.text,
+  }
 
-    this.state = { currentText: props.text }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.text !== nextProps.text) {
+      this.setState({ currentText: nextProps.text });
+    }
   }
 
   _setTextAreaRef = element => this._textArea = element;
+
+  _getTextArea() {
+    return (
+      <textarea
+        className={styles.textArea}
+        value={this.state.currentText}
+        onChange={this._handleChange}
+        ref={this._setTextAreaRef}
+      />
+    );
+  }
+
+  _getCharCount() {
+    const currentCount = this.state.currentText.length;
+
+    return `${currentCount}/${TextArea.MAX_LENGTH}`;
+  }
 
   _handleChange = event => {
     const newText = event.target.value;
@@ -27,24 +48,29 @@ export default class TextArea extends React.PureComponent {
     if (newText.length <= TextArea.MAX_LENGTH) this.setState({ currentText: newText });
   }
 
-  focus = () => this._textArea.focus();
+  focus() {
+    this._textArea.focus();
+  }
 
-  getText = () => this.state.currentText;
+  getText() {
+    return this.state.currentText;
+  }
 
   render() {
-    const { currentText } = this.state;
+    const textArea = this._getTextArea();
+    const charCount = this._getCharCount();
 
     return (
-      <div className={styles.container}>
-        <label className={styles.label}>What?</label>
-        <textarea
-          value={currentText}
-          onChange={this._handleChange}
-          ref={this._setTextAreaRef}
-        />
-        <span className={styles.charCounter}>
-          {currentText.length}/{TextArea.MAX_LENGTH}
-        </span>
+      <div>
+        <label className={styles.labelContainer}>
+          What?
+        </label>
+        <div className={styles.textAreaContainer}>
+          {textArea}
+        </div>
+        <div className={styles.charCounterContainer}>
+          {charCount}
+        </div>
       </div>
     );
   }

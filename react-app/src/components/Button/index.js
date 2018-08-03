@@ -1,39 +1,68 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class Button extends PureComponent {
-  static propTypes = {
-    /**
-     * The label or element the button will show.
-     */
-    children: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.element,
-    ]).isRequired,
+import styles from './index.module.scss';
 
-    /**
-     * The function to call when this button is clicked.
-     */
-    onClick: PropTypes.func,
+const Button = props => {
+  const {
+    children,
+    onClick,
+    disabled,
+    small,
+  } = props;
 
-    /**
-     * Whether this button is disabled or not.
-     */
-    disabled: PropTypes.bool,
+  const _handleClick = () => {
+    if (!disabled) onClick();
   };
 
-  static defaultProps = { disabled: false }
-
-  _handleClick = event => (this.props.onClick) ? this.props.onClick(event) : null;
-
-  render() {
-    return (
-      <button
-        disabled={this.props.disabled}
-        onClick={this._handleClick}
-      >
-        {this.props.children}
-      </button>
-    );
+  function _getStyle() {
+    if (small) {
+      if (disabled) return styles.smallDisabled;
+      return styles.smallEnabled;
+    } else {
+      if (disabled) return styles.normalDisabled;
+      return styles.normalEnabled;
+    }
   }
+
+  const style = _getStyle();
+
+  return (
+    <div className={style}>
+      <button
+        className={styles.button}
+        disabled={disabled}
+        onClick={_handleClick}
+      >
+        {children}
+      </button>
+    </div>
+  );
 }
+
+Button.propTypes = {
+  /**
+   * The label or element the button will show.
+   */
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element,
+  ]).isRequired,
+
+  /**
+   * The function to call when the button is clicked.
+   */
+  onClick: PropTypes.func.isRequired,
+
+  /**
+   * Whether the button is disabled or not. Default value: false
+   */
+  disabled: PropTypes.bool,
+
+  /**
+   * Whether the button is a small one or not. Default value: false
+   */
+  small: PropTypes.bool,
+};
+
+export default Button;

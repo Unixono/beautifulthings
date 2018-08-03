@@ -1,11 +1,9 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/fontawesome-free-solid';
 
 import styles from './index.module.scss';
 
-export default class InputText extends PureComponent {
+export default class InputText extends React.PureComponent {
   static TEXT = 'text';
   static PASSWORD = 'password';
 
@@ -13,7 +11,10 @@ export default class InputText extends PureComponent {
     /**
      * The type of the input. Possible values: 'text' or 'password'.
      */
-    type: PropTypes.oneOf([InputText.TEXT, InputText.PASSWORD]).isRequired,
+    type: PropTypes.oneOf([
+      InputText.TEXT,
+      InputText.PASSWORD
+    ]).isRequired,
 
     /**
      * The label the input will display.
@@ -26,9 +27,14 @@ export default class InputText extends PureComponent {
     placeholder: PropTypes.string,
 
     /**
+     * The error message the input will display.
+     */
+    errorMessage: PropTypes.string,
+
+    /**
      * The function to call when the input value changes.
      */
-    onChange: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
 
     /**
      * The function to call when enter is pressed.
@@ -36,53 +42,105 @@ export default class InputText extends PureComponent {
     onEnter: PropTypes.func,
   };
 
-  static defaultProps = {
-    label: '',
-    placeholder: '',
+  state = {
+    isPasswordVisible: false,
+  };
+
+  _setInputRef = element => this._input = element;
+
+  _handleChange = event => {
+    const value = event.target.value;
+
+    this.props.onChange(value);
   }
 
-  constructor(props) {
-    super(props);
-    this.state = { isPasswordVisible: false };
+  _handleKeyDown = event => {
+    const keyPressed = event.key;
+
+    if (keyPressed === 'Enter' && this.props.onEnter) this.props.onEnter();
   }
-
-  _handleChange = event => (this.props.onChange) ? this.props.onChange(event.target.value) : null;
-  _handleKeyDown = event => (this.props.onEnter && event.key === 'Enter') ? this.props.onEnter() : null;
-
-  _setInputRef = input => this._inputRef = input;
-  focus = () => this._inputRef.focus();
 
   _togglePasswordVisibility = () => this.setState({ isPasswordVisible: !this.state.isPasswordVisible });
+
+  _getLabel() {
+    const { label } = this.props;
+
+    if (!label) return null;
+
+    return (
+      <span>
+        {label}
+      </span>
+    );
+  }
+
   _getInputIcon = () => {
     if (this.props.type === InputText.TEXT) return null;
 
+    const style = this.state.isPasswordVisible ? styles.hidePassword : styles.showPassword;
+
     return (
-      <FontAwesomeIcon
-        className={styles.showHideButton}
-        icon={(this.state.isPasswordVisible) ? faEyeSlash : faEye}
+      <div
+        className={style}
         onClick={this._togglePasswordVisibility}
       />
-    )
+    );
+  }
+
+  _getInput() {
+    const { type, placeholder } = this.props;
+    const TEXT = InputText.TEXT;
+
+    const inputType = (type === TEXT || this.state.isPasswordVisible) ? TEXT : InputText.PASSWORD;
+    const inputStyle = type === TEXT ? styles.text : styles.password;
+    const inputPlaceholder = placeholder || '';
+
+    return (
+      <input
+        className={inputStyle}
+        type={inputType}
+        placeholder={inputPlaceholder}
+        onKeyDown={this._handleKeyDown}
+        onChange={this._handleChange}
+        ref={this._setInputRef}
+      />
+    );
+  }
+
+  _getErrorMessage() {
+    const { errorMessage } = this.props;
+
+    if (!errorMessage) return null;
+
+    return (
+      <span>
+        {errorMessage}
+      </span>
+    );
+  }
+
+  focus() {
+    this._input.focus();
   }
 
   render() {
+    const label = this._getLabel();
+    const input = this._getInput();
     const icon = this._getInputIcon();
-    const label = (this.props.label !== '') ? <label className={styles.label}>{this.props.label}</label> : null;
-    const placeholder = (this.props.placeholder !== '') ? this.props.placeholder : null;
-    const inputType = (this.props.type === InputText.TEXT || this.state.isPasswordVisible) ? InputText.TEXT : InputText.PASSWORD;
+    const errorMessage = this._getErrorMessage();
 
     return (
-      <div>
-        {label}
-        <input
-          className={(this.props.type === InputText.PASSWORD) ? styles.password : null}
-          type={inputType}
-          placeholder={placeholder}
-          onKeyDown={this._handleKeyDown}
-          onChange={this._handleChange}
-          ref={this._setInputRef}
-        />
-        {icon}
+      <div className={styles.container}>
+        <div className={styles.labelContainer}>
+          {label}
+        </div>
+        <div className={styles.inputContainer}>
+          {input}
+          {icon}
+        </div>
+        <div className={styles.errorMessageContainer}>
+          {errorMessage}
+        </div>
       </div>
     );
   }

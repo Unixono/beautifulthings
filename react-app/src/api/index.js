@@ -1,13 +1,25 @@
 import Account from 'account';
+import * as keystore from 'keystore';
 import { createEntry } from 'utils/entry';
+import { setNotifications, clearNotifications } from 'notifications';
 
-const _HOST = 'http://localhost/';
+const _HOST = 'https://server.beautifulthings.app/';
 
 class ErrorCannotGetEntries extends Error {}
 
 class Api {
+  constructor() {
+    this._username = null;
+    this._token = null;
+  }
+
   initAccount(username, keyPair) {
+    this._username = username;
     this._account = new Account(username, keyPair);
+  }
+
+  get username() {
+    return this._username;
   }
 
   _getUrl(path) {
@@ -51,7 +63,17 @@ class Api {
     const encryptedToken = receivedJson.EncryptedToken;
     this._token = this._account.decrypt(encryptedToken);
 
+    await this._saveAccountData();
+
+    await setNotifications();
+
     return true;
+  }
+
+  async signOut() {
+    await this._clearAccountSavedData();
+
+    await clearNotifications();
   }
 
   async addEntry(entry) {
@@ -66,17 +88,70 @@ class Api {
     return response.ok;
   }
 
-  _decryptReceivedEntry = entry => createEntry(entry.Date, this._account.decrypt(entry.Content));
-
   async getEntries(from, to) {
     const response = await this._get(`things/${from}/${to}`);
 
     if (!response.ok) throw new ErrorCannotGetEntries();
 
     const encryptedEntries = await response.json();
-    const decryptedEntries = encryptedEntries.map(this._decryptReceivedEntry);
+    if (!encryptedEntries) return [];
+
+    const decryptedEntries = [];
+    encryptedEntries.forEach(entry => {
+      const decryptedText = this._account.decrypt(entry.Content);
+
+      if (decryptedText.length) decryptedEntries.push(createEntry(entry.Date, decryptedText));
+    });
 
     return decryptedEntries;
+  }
+
+  async _saveAccountData() {
+    try {
+      const serializedAccount = this._account.serialize();
+
+      await keystore.init();
+      await keystore.set('token', this._token);
+      await keystore.set('account', serializedAccount);
+    } catch (error) {
+      /* Nothing here. If the account data cannot be saved, the app works normally without this feature */
+    }
+  }
+
+  async _clearAccountSavedData() {
+    try {
+      await keystore.init();
+      await keystore.clear();
+    } catch (error) {
+      /* Nothing here. If the account data cannot be deleted, the app works normally without this feature */
+    }
+  }
+
+  async initSavedAccount() {
+    let savedAccountSuccessfulyInitialized = false;
+
+    try {
+      await keystore.init();
+      const savedToken = await keystore.get('token');
+      const serializedSavedAccount = await keystore.get('account');
+
+      const deserializedSavedAccount = JSON.parse(serializedSavedAccount);
+
+      const savedAccountUsername = deserializedSavedAccount.username;
+      const savedAccountKeyPair = {
+        publicKey: Uint8Array.from(deserializedSavedAccount.publicKey),
+        secretKey: Uint8Array.from(deserializedSavedAccount.secretKey),
+      };
+
+      this._token = savedToken;
+      this.initAccount(savedAccountUsername, savedAccountKeyPair);
+
+      savedAccountSuccessfulyInitialized = true;
+    } catch (error) {
+      /* Nothing here. If the account data cannot be loaded, the app works normally and user must signin */
+    }
+
+    return savedAccountSuccessfulyInitialized;
   }
 }
 

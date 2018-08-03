@@ -1,0 +1,79 @@
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
+
+.container {
+  width: 100%;
+  height: 100%;
+  max-width: 270px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+
+  .header {
+    height: 100%;
+    max-height: 100px;
+    border-bottom: 1px solid $lightGray;
+
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      .hideIconContainer {
+        margin-right: 20px;
+        align-self: flex-end;
+      }
+
+      .usernameContainer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-left: 40px;
+  
+        .calendarIcon {
+          width: 30px;
+          height: 30px;
+          margin-right: 10px;
+          background: url('./Calendar.svg') center center/100% 100% no-repeat;
+        }
+  
+        .textContainer {
+          overflow-x: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          color: $darkGray;
+          font-size: 25px;
+          font-family: BariolRegular;
+        }
+      }
+    }
+  }
+
+  .main {
+    flex-grow: 1;
+    margin-top: 40px;
+    margin-left: 40px;
+
+    .radioButtonsContainer {
+      display: flex;
+      margin-top: 20px;
+      margin-left: 30px;
+      margin-bottom: 20px;
+    }
+
+    .radioButtonsContainer > div {
+      margin-right: 20px;
+    }
+  }
+
+  .footer {
+    height: 100%;
+    display: flex;
+    max-height: 125px;
+    padding: 0 25%;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid $lightGray;
+  }
+}

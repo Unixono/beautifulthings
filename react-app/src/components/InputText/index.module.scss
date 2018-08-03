@@ -1,11 +1,63 @@
-.label { font-size: 14px; }
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
 
-.password { padding-right: 25px; }
+$icons: (
+  showPassword: './Eye.svg',
+  hidePassword: './EyeSlash.svg',
+);
 
-.showHideButton {
-  color: #777;
-  font-size: 12px;
-  position: relative;
-  margin-left: -20px;
-  cursor: pointer;
+.container {
+  display: block;
+  font-size: 20px;
+  height: 80px;
+  font-family: BariolRegular;
+
+  .labelContainer {
+    color: $green;
+    margin-bottom: 2px;
+  }
+  
+  .inputContainer {
+    display: flex;
+    position: relative;
+    align-items: center;
+  
+    .text {
+      width: 100%;
+      height: 40px;
+      color: $darkGray;
+      position: relative;
+      font-size: inherit;
+      font-family: inherit;
+      border: 2px solid $lightGray;
+      border-radius: 10px;
+      padding: 0 10px;
+    }
+  
+    .password {
+      @extend .text;
+      padding-right: 40px;
+    }
+
+    @each $icon, $source in $icons {
+      .#{$icon} {
+        width: 20px;
+        height: 20px;
+        right: 10px;
+        position: absolute;
+        background: url($source) center center/contain no-repeat;
+      }
+    }
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  .errorMessageContainer {
+    color: $red;
+    font-size: 15px;
+    text-align: right;
+    margin-top: 2px;
+  }
 }

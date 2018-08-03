@@ -13,8 +13,9 @@ stories.add('Input type text', () => (
     type={InputText.TEXT}
     label={text('Label', 'Username')}
     placeholder={text('Placeholder', 'Username')}
-    onEnter={action('enter pressed')}
-    onChange={action('input change')}
+    errorMessage={text('Error message', '')}
+    onEnter={action('Enter pressed')}
+    onChange={action('Input change')}
   />
 ));
 
@@ -23,7 +24,8 @@ stories.add('Input type password', () => (
     type={InputText.PASSWORD}
     label="Password"
     placeholder={text('Placeholder', 'Password')}
-    onEnter={action('enter pressed')}
-    onChange={action('input change')}
+    errorMessage={text('Error message', '')}
+    onEnter={action('Enter pressed')}
+    onChange={action('Input change')}
   />
 ));

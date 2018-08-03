@@ -1,0 +1,22 @@
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
+
+.container {
+  height: 100%;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+
+  text-align: center;
+  color: $lightGray;
+  font-family: BariolRegular;
+  font-size: 30px;
+  @media screen and (max-width: 320px) {
+    font-size: 25px;
+  }
+  @media screen and (min-width: 400px) {
+    font-size: 35px;
+  }
+
+  background: url('./Arrow.svg') bottom center/20% 20% no-repeat content-box;
+}

@@ -1,0 +1,57 @@
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
+
+.container {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: BariolRegular;
+  border: 2px solid $lightGray;
+
+  .topContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .datePreviewContainer {
+      width: 90%;
+      min-width: 90%;
+      max-width: 90%;
+
+      .dateContainer {
+        color: $green;
+        font-size: 25px;
+      }
+
+      .previewContainer {
+        color: $darkGray;
+        font-size: 15px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .divider {
+    width: 100%;
+    margin: 10px 0;
+    border-bottom: 1px solid $lightGray;
+  }
+
+  .fullTextContainer {
+    color: $darkGray;
+    font-size: 20px;
+  }
+
+  .buttonsContainer {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .buttonsContainer > * {
+    margin-left: 10px;
+  }
+}

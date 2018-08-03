@@ -1,1 +1,34 @@
-.label { font-size: 14px; }
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
+
+$fontFamily: BariolRegular;
+
+.labelContainer {
+  color: $orange;
+  text-align: left;
+  font-size: 20px;
+  font-family: $fontFamily;
+  margin-bottom: 2px;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+
+  .input {
+    width: 100%;
+    height: 40px;
+    color: $darkGray;
+    font-size: 20px;
+    font-family: $fontFamily;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 2px solid $lightGray;
+    background: url('./Calendar.svg') center right/25px 25px no-repeat content-box;
+    appearance: textfield;
+  }
+
+  .input:focus {
+    outline: none;
+  }
+}

@@ -1,10 +1,19 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-}
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
 
-.buttonsContainer {
-  display: flex;
-  justify-content: center;
+.container {
+  width: 80%;
+  padding: 10px;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  font-family: BariolRegular;
+  background-color: $violet;
+  border-radius: 10px;
+
+  .buttonsContainer {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-around;
+  }
 }

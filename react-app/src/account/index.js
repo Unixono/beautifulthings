@@ -9,8 +9,12 @@ nacl.util = require('tweetnacl-util');
 class ErrorAuthenticationFail extends Error {}
 
 class Account {
-  static validateUserPass(username, password) {
-    return username.length > 0 && password.length > 0;
+  static validateUsername(username) {
+    return username.length > 0;
+  }
+
+  static validatePassword(password) {
+    return password.length > 6;
   }
 
   static generateKeyPair(username, password) {
@@ -18,10 +22,11 @@ class Account {
       const hashedPassword = sha256(nacl.util.decodeUTF8(password));
       const salt = sha256(nacl.util.decodeUTF8(username));
       const options = {
-        N: 1 << 20,
+        N: 1 << 16,
         r: 8,
         p: 1,
         dkLen: 32,
+        interruptStep: 10,
         encoding: 'binary'
       };
 
@@ -48,6 +53,17 @@ class Account {
       Pk: pkAsArray,
       Tz: this._tz,
       Offset: this._offset
+    });
+  }
+
+  serialize() {
+    const publicKey = Array.from(this._pk);
+    const secretKey = Array.from(this._sk);
+
+    return JSON.stringify({
+      username: this._username,
+      publicKey,
+      secretKey,
     });
   }
 

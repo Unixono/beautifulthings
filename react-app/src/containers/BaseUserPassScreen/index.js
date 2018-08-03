@@ -1,27 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import styles from './index.module.scss';
-
 import InputText from 'components/InputText';
 import Logo from 'components/Logo';
 
+import styles from './index.module.scss';
+
 export default class BaseUserPassScreen extends React.PureComponent {
   static propTypes = {
-    onChanges: PropTypes.func.isRequired,
+    /**
+     * The error message to shown if username input value is not valid
+     */
+    usernameError: PropTypes.string,
+
+    /**
+     * The error message to shown if password input value is not valid
+     */
+    passwordError: PropTypes.string,
+
+    /**
+     * The function to call when the username input changes
+     */
+    onUsernameChange: PropTypes.func.isRequired,
+
+    /**
+     * The function to call when the password input changes
+     */
+    onPasswordChange: PropTypes.func.isRequired,
+
+    /**
+     * The function to call when enter is pressed within password input.
+     */
     onPasswordEnter: PropTypes.func,
+
+    /**
+     * The elements to be shown below the password input.
+     */
     children: PropTypes.element.isRequired,
-  }
-
-  static defaultProps = { onPasswordEnter: null }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      username: '',
-      password: '',
-    };
   }
 
   componentDidMount() {
@@ -31,35 +46,67 @@ export default class BaseUserPassScreen extends React.PureComponent {
   _setUsernameInputRef = element => this._usernameInput = element;
   _setPasswordInputRef = element => this._passwordInput = element;
 
-  _notifyChanges = () => this.props.onChanges(this.state.username, this.state.password);
-
-  _handleUsernameChange = username => this.setState({ username }, this._notifyChanges);
-  _handlePasswordChange = password => this.setState({ password }, this._notifyChanges);
-
   _handleUsernameEnter = () => this._passwordInput.focus();
-  _handlePasswordEnter = () => this.props.onPasswordEnter ? this.props.onPasswordEnter() : null;
+  _handlePasswordEnter = () => {
+    const { onPasswordEnter } = this.props;
+
+    if (onPasswordEnter) onPasswordEnter();
+  }
+
+  _getUsernameInput() {
+    const { onUsernameChange, usernameError } = this.props;
+
+    return (
+      <InputText
+        type={InputText.TEXT}
+        label="Username"
+        errorMessage={usernameError}
+        onChange={onUsernameChange}
+        onEnter={this._handleUsernameEnter}
+        ref={this._setUsernameInputRef}
+      />
+    );
+  }
+
+  _getPasswordInput() {
+    const { onPasswordChange, passwordError } = this.props;
+
+    return (
+      <InputText
+        type={InputText.PASSWORD}
+        label="Password"
+        errorMessage={passwordError}
+        onChange={onPasswordChange}
+        onEnter={this._handlePasswordEnter}
+        ref={this._setPasswordInputRef}
+      />
+    );
+  }
 
   render() {
+    const logo = Logo();
+    const usernameInput = this._getUsernameInput();
+    const passwordInput = this._getPasswordInput();
+
     return (
       <div className={styles.container}>
-        <Logo size={Logo.BIG} />
-        <InputText
-          type={InputText.TEXT}
-          label="Username: "
-          placeholder="Username"
-          onChange={this._handleUsernameChange}
-          onEnter={this._handleUsernameEnter}
-          ref={this._setUsernameInputRef}
-        />
-        <InputText
-          type={InputText.PASSWORD}
-          label="Password: "
-          placeholder="Password"
-          onChange={this._handlePasswordChange}
-          onEnter={this._handlePasswordEnter}
-          ref={this._setPasswordInputRef}
-        />
-        {this.props.children}
+        <div className={styles.mainContainer}>
+          <div className={styles.logoContainer}>
+            {logo}
+          </div>
+          <div className={styles.space} />
+          <div className={styles.formContainer}>
+            <div className={styles.usernameInputContainer}>
+              {usernameInput}
+            </div>
+            <div>
+              {passwordInput}
+            </div>
+            <div>
+              {this.props.children}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

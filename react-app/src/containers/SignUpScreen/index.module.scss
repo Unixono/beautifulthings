@@ -1,5 +1,17 @@
+@import 'styles/colors.scss';
+@import 'styles/fonts.scss';
+
 .container {
+  margin-top: 20px;
   display: flex;
   text-align: center;
   flex-direction: column;
+
+  .signInLabelContainer {
+    margin: 15px 0;
+    font-size: 20px;
+    color: $blue;
+    font-family: BariolRegular;
+    padding: 10px 0;
+  }
 }
