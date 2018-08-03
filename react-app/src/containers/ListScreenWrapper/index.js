@@ -5,6 +5,7 @@ import api from 'api';
 
 import { getCurrentDateString } from 'utils/date';
 import { createEntry } from 'utils/entry';
+import { showErrorModal } from 'utils/errorModal';
 import { showLoadingModal, hideLoadingModal } from 'utils/spinner';
 import { setNotifications } from 'notifications';
 
@@ -32,9 +33,13 @@ export default class ListScreenWrapper extends React.PureComponent {
     showLoadingModal('Loading...');
     try {
       const entries = await api.getEntries('2018-01-01', currentDate);
+
       if (entries.length) this.setState({ entries });
-    } catch (error) { /* TODO: TBD */ }
-    hideLoadingModal();
+    } catch (error) {
+      showErrorModal('Cannot get the entries...');
+    } finally {
+      hideLoadingModal();
+    }
   }
 
   _openSettingsModal = () => this.setState({ isSettingsModalVisible: true });
@@ -68,10 +73,10 @@ export default class ListScreenWrapper extends React.PureComponent {
           entryToDelete: null,
         });
       } else {
-        /* TODO: TBD */
+        showErrorModal('Cannot delete the entry...');
       }
     } catch (error) {
-      /* TODO: TBD */
+      showErrorModal('Cannot delete the entry...');
     } finally {
       hideLoadingModal();
     }
