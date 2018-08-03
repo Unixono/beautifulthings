@@ -18,6 +18,8 @@
 
   .leftModal {
     @extend .modal;
+    display: inline-block;
+    width: auto;
   }
 
   .floattingModal {
