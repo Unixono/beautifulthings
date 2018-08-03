@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import moment from 'moment';
+
 import ActionIcon from 'components/ActionIcon';
 import Button from 'components/Button';
 
@@ -37,6 +39,12 @@ export default class ListItem extends React.PureComponent {
   _handleDelete = () => this.props.onDelete(this.props.date);
 
   _toggleExpanded = () => this.setState({ expanded: !this.state.expanded });
+
+  _getFormattedDateString() {
+    const formattedDateString = moment(this.props.date).format('MMM D, YYYY');
+
+    return formattedDateString;
+  }
 
   _getActionIcon() {
     const icon = this.state.expanded ? ActionIcon.COLLAPSE : ActionIcon.EXPAND;
@@ -100,6 +108,7 @@ export default class ListItem extends React.PureComponent {
   }
 
   render() {
+    const date = this._getFormattedDateString();
     const icon = this._getActionIcon();
     const textPreview = this._getTextPreview();
     const divider = this._getDivider();
@@ -111,7 +120,7 @@ export default class ListItem extends React.PureComponent {
         <div className={styles.topContainer}>
           <div className={styles.datePreviewContainer}>
             <div className={styles.dateContainer}>
-              {this.props.date}
+              {date}
             </div>
             <div className={styles.previewContainer}>
               {textPreview}
