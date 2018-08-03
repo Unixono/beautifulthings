@@ -5,6 +5,7 @@ import api from 'api';
 
 import { getCurrentDateString } from 'utils/date';
 import { showLoadingModal, hideLoadingModal } from 'utils/spinner';
+import { setNotifications } from 'notifications';
 
 import Button from 'components/Button';
 import ButtonsModal from 'components/ButtonsModal';
@@ -38,7 +39,7 @@ export default class ListScreenWrapper extends React.PureComponent {
   _openSettingsModal = () => this.setState({ isSettingsModalVisible: true });
 
   _closeSettingsModal = isDaily => {
-    // TODO: Update accounts notifications configuration if needed
+    setNotifications(isDaily);
     this.setState({ isSettingsModalVisible: false });
   }
 
