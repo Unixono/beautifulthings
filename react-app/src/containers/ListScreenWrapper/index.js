@@ -7,7 +7,7 @@ import { getCurrentDateString } from 'utils/date';
 import { createEntry } from 'utils/entry';
 import { showErrorModal } from 'utils/errorModal';
 import { showLoadingModal, hideLoadingModal } from 'utils/spinner';
-import { setNotifications } from 'notifications';
+import { setNotifications, isDailyScheduled } from 'notifications';
 
 import Button from 'components/Button';
 import ButtonsModal from 'components/ButtonsModal';
@@ -24,7 +24,7 @@ export default class ListScreenWrapper extends React.PureComponent {
   state = {
     entries: [],
     entryToDelete: null,
-    isSettingsModalVisible: false,
+    isDaily: true,
   };
 
   async componentWillMount() {
@@ -32,9 +32,17 @@ export default class ListScreenWrapper extends React.PureComponent {
 
     showLoadingModal('Loading...');
     try {
+      const isDaily = await isDailyScheduled();
       const entries = await api.getEntries('2018-01-01', currentDate);
 
-      if (entries.length) this.setState({ entries });
+      if (entries.length) {
+        this.setState({
+          isDaily,
+          entries,
+        });
+      } else {
+        this.setState({ isDaily });
+      }
     } catch (error) {
       showErrorModal('Cannot get the entries...');
     } finally {
@@ -42,16 +50,17 @@ export default class ListScreenWrapper extends React.PureComponent {
     }
   }
 
-  _openSettingsModal = () => this.setState({ isSettingsModalVisible: true });
+  _setSettingsModalRef = element => this._settingsModal = element;
 
+  _openSettingsModal = () => this._settingsModal.show(this.state.isDaily);
   _closeSettingsModal = isDaily => {
     setNotifications(isDaily);
-    this.setState({ isSettingsModalVisible: false });
+    this.setState({ isDaily });
   }
 
-  _handleSignOut = () => {
-    api.signOut()
-      .then(this.props.onSignOut)
+  _handleSignOut = async () => {
+    await api.signOut();
+    this.props.onSignOut();
   }
 
   _setEntryToDelete = entryDate => this.setState({ entryToDelete: entryDate });
@@ -83,14 +92,11 @@ export default class ListScreenWrapper extends React.PureComponent {
   }
 
   _getSettingsModal() {
-    // TODO: Get current notifications configuration of the account
-
     return <SettingsModal
-      visible={this.state.isSettingsModalVisible}
       username={api.username}
-      daily={true}
       onHide={this._closeSettingsModal}
       onSignOut={this._handleSignOut}
+      ref={this._setSettingsModalRef}
     />
   }
 
