@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { showErrorModal } from 'utils/errorModal';
+
 import ActionIcon from 'components/ActionIcon';
 import BaseScreen from 'containers/BaseScreen';
 import Button from 'components/Button';
@@ -58,6 +60,11 @@ export default class EditScreen extends React.PureComponent {
   _handleSave = () => {
     const text = this._textArea.getText();
     const date = this._datePicker.getDate();
+
+    if (!text.length) {
+      showErrorModal('Entry cannot be empty');
+      return;
+    }
 
     this.props.onSave(date, text);
   }
