@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import api from 'api';
 
 import { getCurrentDateString } from 'utils/date';
+import { createEntry } from 'utils/entry';
 import { showLoadingModal, hideLoadingModal } from 'utils/spinner';
 import { setNotifications } from 'notifications';
 
@@ -51,7 +52,30 @@ export default class ListScreenWrapper extends React.PureComponent {
   _setEntryToDelete = entryDate => this.setState({ entryToDelete: entryDate });
   _unsetEntryToDelete = () => this.setState({ entryToDelete: null });
 
-  _removeEntry = () => { /* TODO: remove entry -the one indicated at state.entryToDelete- */ }
+  _removeEntry = async () => {
+    const { entries, entryToDelete } = this.state;
+    const emptyEntry = createEntry(entryToDelete, '');
+
+    showLoadingModal('Loading...');
+    try {
+      const success = await api.addEntry(emptyEntry);
+
+      if (success) {
+        const remainingEntries = entries.filter(entry => entry.date !== entryToDelete);
+
+        this.setState({
+          entries: remainingEntries,
+          entryToDelete: null,
+        });
+      } else {
+        /* TODO: TBD */
+      }
+    } catch (error) {
+      /* TODO: TBD */
+    } finally {
+      hideLoadingModal();
+    }
+  }
 
   _getSettingsModal() {
     // TODO: Get current notifications configuration of the account
