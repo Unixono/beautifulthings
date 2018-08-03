@@ -12,19 +12,9 @@ import styles from './index.module.scss';
 export default class SettingsModal extends React.PureComponent {
   static propTypes = {
     /**
-     * Whenever the modal is visible or not
-     */
-    visible: PropTypes.bool.isRequired,
-
-    /**
      * The username to display
      */
     username: PropTypes.string.isRequired,
-
-    /**
-     * Whenever the notifications are set to daily or not
-     */
-    daily: PropTypes.bool.isRequired,
 
     /**
      * The function to call when hide icon is tapped
@@ -38,12 +28,16 @@ export default class SettingsModal extends React.PureComponent {
   }
 
   state = {
-    isDaily: this.props.daily,
+    visible: false,
+    isDaily: true,
   };
 
   _toggleNotifications = () => this.setState({ isDaily: !this.state.isDaily });
 
-  _handleHide = () => this.props.onHide(this.state.isDaily);
+  _handleHide = () => {
+    this.props.onHide(this.state.isDaily);
+    this.setState({ visible: false });
+  }
 
   _getHeader() {
     const hideIcon = ActionIcon({
@@ -112,6 +106,13 @@ export default class SettingsModal extends React.PureComponent {
     );
   }
 
+  show(isDaily) {
+    this.setState({
+      visible: true,
+      isDaily,
+    });
+  }
+
   render() {
     const header = this._getHeader();
     const main = this._getMain();
@@ -132,9 +133,10 @@ export default class SettingsModal extends React.PureComponent {
     );
 
     return BaseModal({
-      visible: this.props.visible,
+      visible: this.state.visible,
       leftModal: true,
       children: modalContent,
+      onDismiss: this._handleHide,
     });
   }
 }
