@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Account from 'account';
 import api from 'api';
 
+import { showErrorModal } from 'utils/errorModal';
 import { showLoadingModal, hideLoadingModal } from 'utils/spinner';
 
 import BaseUserPassScreen from 'containers/BaseUserPassScreen';
@@ -85,24 +86,23 @@ export default class SignUpScreen extends React.PureComponent {
   _handleSignUp = () => this._signUp();
   _handleSignIn = () => this.props.onSignIn();
 
-  _signUp() {
+  async _signUp() {
     const { username, password } = this.state;
 
     showLoadingModal('Signing up...');
-    Account.generateKeyPair(username, password)
-      .then(keyPair => {
-        api.initAccount(username, keyPair);
-        return api.signUp();
-      })
-      .then(signUpResult => {
-        hideLoadingModal();
-        if (signUpResult) this._showSuccessfulySignedUpModal();
-        else this._toggleTryAnotherModalVisibility();
-      })
-      .catch(() => {
-        hideLoadingModal();
-        /* TODO: TBD: A new modal maybe? */
-      });
+    try {
+      const keyPair = await Account.generateKeyPair(username, password);
+
+      api.initAccount(username, keyPair);
+      const success = await api.signUp();
+
+      if (success) this._showSuccessfulySignedUpModal();
+      else this._toggleTryAnotherModalVisibility();
+    } catch (error) {
+      showErrorModal('Cannot connect to the server...');
+    } finally {
+      hideLoadingModal();
+    }
   }
 
   _getSignUpButton() {
