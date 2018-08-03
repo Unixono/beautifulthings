@@ -1,6 +1,7 @@
 import Account from 'account';
 import * as keystore from 'keystore';
 import { createEntry } from 'utils/entry';
+import { setNotifications, clearNotifications } from 'notifications';
 
 const _HOST = 'https://server.beautifulthings.app/';
 
@@ -64,11 +65,15 @@ class Api {
 
     await this._saveAccountData();
 
+    await setNotifications();
+
     return true;
   }
 
   async signOut() {
     await this._clearAccountSavedData();
+
+    await clearNotifications();
   }
 
   async addEntry(entry) {
