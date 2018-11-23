@@ -50,6 +50,9 @@ export default class ListItem extends React.PureComponent {
 
     const icon = this.state.expanded ? ActionIcon.COLLAPSE : ActionIcon.EXPAND;
 
+    // iOS does not recognize date with format "2018-11-23", but "2018/11/23".
+    const entryDate = date.replace(/-/g, '/') + ' 00:00:00';
+
     return (
       <div className={styles.container}>
         <div className={styles.topContainer}>
@@ -59,7 +62,7 @@ export default class ListItem extends React.PureComponent {
                 year="numeric"
                 month="short"
                 day="numeric"
-                value={Date(date + " 00:00:00")}
+                value={new Date(entryDate)}
               />
             </div>
             <div className={textPreviewStyle}>
